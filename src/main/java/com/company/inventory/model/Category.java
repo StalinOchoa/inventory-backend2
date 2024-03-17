@@ -9,27 +9,20 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import lombok.Data;
 
-
-
 @Data
 @Entity
-@Table(name="category")
-public class Category implements Serializable {
+@Table(name = "category")
+public class Category implements Serializable{
 
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 53346491576034434L;
-	/**
-	 * 
-	 */
+	private static final long serialVersionUID = -4310027227752446841L;
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 	private String name;
 	private String description;
-	
-	
 
 }

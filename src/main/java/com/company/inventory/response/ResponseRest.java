@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 public class ResponseRest {
-	
+
 	private ArrayList<HashMap<String, String>> metadata = new ArrayList<>();
 
 	public ArrayList<HashMap<String, String>> getMetadata() {
@@ -21,7 +21,5 @@ public class ResponseRest {
 		
 		metadata.add(map);
 	}
-	
-	
 
 }
