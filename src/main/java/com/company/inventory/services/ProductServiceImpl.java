@@ -86,7 +86,7 @@ public class ProductServiceImpl implements IProductService {
 					response.getProduct().setProducts(list);
 					response.setMetadata("Respuesta ok", "00", "Producto encontrado" );
 				} else {
-					response.setMetadata("respuesta nok","-1", "producto no en contrada asociada al producto");
+					response.setMetadata("respuesta nok","-1", "producto no encontrado");
 					return new ResponseEntity<ProductResponseRest>(response, HttpStatus.NOT_FOUND);
 				}
 				
@@ -131,6 +131,26 @@ public class ProductServiceImpl implements IProductService {
 		} catch (Exception e) {
 			e.getStackTrace();
 			response.setMetadata("respuesta nok","-1", "Error al buscar producto por nombre");
+			return new ResponseEntity<ProductResponseRest>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+		
+		return new ResponseEntity<ProductResponseRest>(response, HttpStatus.OK);
+
+	}
+
+	@Override
+	@Transactional
+	public ResponseEntity<ProductResponseRest> deleteById(Long id) {
+		ProductResponseRest response = new ProductResponseRest();
+		
+		try {
+			//eliminar producto por ID
+			productDao.deleteById(id);
+			response.setMetadata("Respuesta ok", "00", "Producto eliminado" );
+				
+		} catch (Exception e) {
+			e.getStackTrace();
+			response.setMetadata("respuesta nok","-1", "Error al eliminar producto");
 			return new ResponseEntity<ProductResponseRest>(response, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 		
