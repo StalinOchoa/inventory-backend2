@@ -196,4 +196,59 @@ public class ProductServiceImpl implements IProductService {
 
 	}
 
+	@Override
+	@Transactional //sirve para dar un rolback y commit a la bdd cuando falla algo
+	public ResponseEntity<ProductResponseRest> update(Product product, long categoryId, Long id) {
+		ProductResponseRest response = new ProductResponseRest();
+		List<Product> list= new ArrayList<>();
+		
+		try {
+			//buscar categoria seteando al objeto producto
+			Optional<Category> category = categoryDao.findById(categoryId);
+			
+			if( category.isPresent()) {
+				product.setCategory(category.get());
+			} else {
+				response.setMetadata("respuesta nok","-1", "categoria no en contrada asociada al producto");
+				return new ResponseEntity<ProductResponseRest>(response, HttpStatus.NOT_FOUND);
+			}
+			//buscar el producto a actualizar
+			Optional<Product> productSearch = productDao.findById(id);
+			
+			if(productSearch.isPresent()) {
+				
+				//se actualiza el producto
+				productSearch.get().setAccount(product.getAccount());
+				productSearch.get().setCategory(product.getCategory());
+				productSearch.get().setName(product.getName());
+				productSearch.get().setPicture(product.getPicture());
+				productSearch.get().setPrice(product.getPrice());
+				
+				//guarda el producto en bdd
+				Product productToUpdate = productDao.save(productSearch.get());
+				
+				if (productToUpdate != null) {
+					list.add(productToUpdate);
+					response.getProduct().setProducts(list);
+					response.setMetadata("respuesta ok","00", "Producto actualizado");
+					
+				} else {
+					response.setMetadata("respuesta nok","-1", "Producto no actualizado");
+					return new ResponseEntity<ProductResponseRest>(response, HttpStatus.BAD_REQUEST);
+				}
+				
+			} else {
+				response.setMetadata("respuesta nok","-1", "Producto no actualizado");
+				return new ResponseEntity<ProductResponseRest>(response, HttpStatus.NOT_FOUND);
+			}
+			
+		} catch (Exception e) {
+			e.getStackTrace();
+			response.setMetadata("respuesta nok","-1", "Error al actualizar producto");
+			return new ResponseEntity<ProductResponseRest>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+		
+		return new ResponseEntity<ProductResponseRest>(response, HttpStatus.OK);
+	}
+
 }
